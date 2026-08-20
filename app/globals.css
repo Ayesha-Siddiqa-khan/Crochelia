@@ -1,0 +1,192 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Crochelia design tokens — PROJECT.md §2 (colour), §2.4 (type),
+   §2.5 (radius/elevation), §5.2 (motion)
+   ============================================================ */
+
+:root {
+  /* Surfaces */
+  --surface-base: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: #fcfafa;
+  --surface-blush: #fff6f8;
+  --surface-blush-deep: #fdebf0;
+  --surface-overlay: rgba(28, 25, 26, 0.4);
+
+  /* Brand pink ramp */
+  --pink-50: #fff5f8;
+  --pink-100: #ffe4ec;
+  --pink-200: #ffc9da;
+  --pink-300: #fba5c0;
+  --pink-400: #f27ca3;
+  --pink-500: #e85d8a;
+  --pink-600: #d14574;
+  --pink-700: #ae3159;
+  --pink-800: #862544;
+  --pink-900: #5e1a30;
+
+  /* Text */
+  --text-primary: #1c191a;
+  --text-secondary: #57504f;
+  --text-tertiary: #857c7b;
+  --text-disabled: #b4adac;
+  --text-on-brand: #ffffff;
+  --text-brand: var(--pink-700);
+
+  /* Borders */
+  --border-subtle: #f2eeee;
+  --border-default: #e7e1e1;
+  --border-strong: #d6cece;
+  --border-brand: var(--pink-300);
+  --border-focus: var(--pink-500);
+
+  /* Semantic */
+  --success-fg: #1f7a54;
+  --success-bg: #e9f7f0;
+  --warning-fg: #8a5a00;
+  --warning-bg: #fff6e3;
+  --danger-fg: #b3261e;
+  --danger-bg: #fdecea;
+  --info-fg: #2a5d9f;
+  --info-bg: #edf3fc;
+
+  /* Craft accents — yarn/fibre representation only, never UI chrome */
+  --accent-cream: #f5ebdc;
+  --accent-sand: #e4d4be;
+  --accent-clay: #c98e76;
+  --accent-sage: #9fb3a0;
+  --accent-slate: #8e9aab;
+  --accent-plum: #9c7ba3;
+
+  /* Motion */
+  --duration-instant: 100ms;
+  --duration-fast: 180ms;
+  --duration-base: 260ms;
+  --duration-slow: 400ms;
+  --duration-story: 700ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@theme inline {
+  --color-surface-base: var(--surface-base);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-surface-blush: var(--surface-blush);
+  --color-surface-blush-deep: var(--surface-blush-deep);
+  --color-surface-overlay: var(--surface-overlay);
+
+  --color-pink-50: var(--pink-50);
+  --color-pink-100: var(--pink-100);
+  --color-pink-200: var(--pink-200);
+  --color-pink-300: var(--pink-300);
+  --color-pink-400: var(--pink-400);
+  --color-pink-500: var(--pink-500);
+  --color-pink-600: var(--pink-600);
+  --color-pink-700: var(--pink-700);
+  --color-pink-800: var(--pink-800);
+  --color-pink-900: var(--pink-900);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-disabled: var(--text-disabled);
+  --color-text-on-brand: var(--text-on-brand);
+  --color-text-brand: var(--text-brand);
+
+  --color-border-subtle: var(--border-subtle);
+  --color-border-default: var(--border-default);
+  --color-border-strong: var(--border-strong);
+  --color-border-brand: var(--border-brand);
+  --color-border-focus: var(--border-focus);
+
+  --color-success-fg: var(--success-fg);
+  --color-success-bg: var(--success-bg);
+  --color-warning-fg: var(--warning-fg);
+  --color-warning-bg: var(--warning-bg);
+  --color-danger-fg: var(--danger-fg);
+  --color-danger-bg: var(--danger-bg);
+  --color-info-fg: var(--info-fg);
+  --color-info-bg: var(--info-bg);
+
+  --color-accent-cream: var(--accent-cream);
+  --color-accent-sand: var(--accent-sand);
+  --color-accent-clay: var(--accent-clay);
+  --color-accent-sage: var(--accent-sage);
+  --color-accent-slate: var(--accent-slate);
+  --color-accent-plum: var(--accent-plum);
+
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  --shadow-xs: 0 1px 2px rgba(28, 25, 26, 0.04);
+  --shadow-sm: 0 2px 8px rgba(28, 25, 26, 0.05);
+  --shadow-md: 0 8px 24px rgba(28, 25, 26, 0.07);
+  --shadow-lg: 0 16px 48px rgba(28, 25, 26, 0.1);
+  --shadow-brand: 0 8px 24px rgba(232, 93, 138, 0.18);
+
+  --animate-shimmer: shimmer 1.4s ease-in-out infinite;
+  --animate-count-particle: count-particle 400ms ease-out forwards;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes count-particle {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx, 0), var(--ty, -24px)) scale(0.4);
+  }
+}
+
+body {
+  background: var(--surface-base);
+  color: var(--text-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::selection {
+  background: var(--pink-200);
+  color: var(--text-primary);
+}
+
+/* Skeleton shimmer surface */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-sunken) 25%,
+    var(--border-subtle) 50%,
+    var(--surface-sunken) 75%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
