@@ -1,6 +1,8 @@
 @echo off
 setlocal enabledelayedexpansion
 
+pushd "%~dp0"
+
 echo ========================================
 echo TerraPilot Terraform Runner
 echo ========================================
@@ -11,6 +13,7 @@ if errorlevel 1 (
   echo [ERROR] Terraform is not installed or not available in PATH.
   echo Please install Terraform first:
   echo https://developer.hashicorp.com/terraform/install
+  popd
   pause
   exit /b 1
 )
@@ -19,6 +22,7 @@ echo [1/5] Running terraform fmt...
 terraform fmt -recursive
 if errorlevel 1 (
   echo [ERROR] terraform fmt failed.
+  popd
   pause
   exit /b 1
 )
@@ -28,6 +32,7 @@ echo [2/5] Running terraform init...
 terraform init
 if errorlevel 1 (
   echo [ERROR] terraform init failed.
+  popd
   pause
   exit /b 1
 )
@@ -37,6 +42,7 @@ echo [3/5] Running terraform validate...
 terraform validate
 if errorlevel 1 (
   echo [ERROR] terraform validate failed.
+  popd
   pause
   exit /b 1
 )
@@ -46,6 +52,7 @@ echo [4/5] Running terraform plan...
 terraform plan -out=tfplan
 if errorlevel 1 (
   echo [ERROR] terraform plan failed.
+  popd
   pause
   exit /b 1
 )
@@ -66,6 +73,7 @@ if /I "%APPLY_CONFIRM%"=="Y" (
   terraform apply tfplan
   if errorlevel 1 (
     echo [ERROR] terraform apply failed.
+    popd
     pause
     exit /b 1
   )
@@ -84,5 +92,6 @@ if /I "%APPLY_CONFIRM%"=="Y" (
 )
 
 echo.
+popd
 pause
 endlocal

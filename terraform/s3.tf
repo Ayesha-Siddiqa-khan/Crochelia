@@ -1,7 +1,7 @@
 
 # S3 Bucket
 resource "aws_s3_bucket" "main" {
-  bucket        = "crochelia-dev-app-assets-dvque00k"
+  bucket        = var.s3_bucket_name
   force_destroy = false
 
   tags = {
