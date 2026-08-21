@@ -14,6 +14,7 @@ const LINKS = [
   { href: "/patterns", label: "Patterns" },
   { href: "/yarn", label: "Yarn" },
   { href: "/community", label: "Community" },
+  { href: "/pricing", label: "Pricing" },
 ];
 
 export function AppNav({

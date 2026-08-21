@@ -63,6 +63,7 @@ export function MarketingFooter() {
         <p className="mt-10 text-xs text-text-tertiary">
           © {new Date().getFullYear()} Crochelia. Made with love for makers.
         </p>
+        <p className="mt-1 text-xs text-text-tertiary">Built by Ayesha Siddiqa.</p>
       </div>
     </footer>
   );

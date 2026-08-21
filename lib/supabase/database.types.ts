@@ -52,6 +52,92 @@ export type Database = {
           },
         ]
       }
+      patterns: {
+        Row: {
+          abbreviations: string | null
+          ai_model: string | null
+          created_at: string
+          deleted_at: string | null
+          description: string | null
+          difficulty: string | null
+          gauge: string | null
+          hook_size_mm: number | null
+          id: string
+          image_url: string | null
+          instructions: string
+          materials: string | null
+          name: string
+          notes: string | null
+          origin: string
+          project_type: string | null
+          square_size_cm: number | null
+          technique: string | null
+          total_squares: number | null
+          updated_at: string
+          user_id: string
+          visibility: string
+          yarn_weight: string | null
+        }
+        Insert: {
+          abbreviations?: string | null
+          ai_model?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          difficulty?: string | null
+          gauge?: string | null
+          hook_size_mm?: number | null
+          id?: string
+          image_url?: string | null
+          instructions: string
+          materials?: string | null
+          name: string
+          notes?: string | null
+          origin?: string
+          project_type?: string | null
+          square_size_cm?: number | null
+          technique?: string | null
+          total_squares?: number | null
+          updated_at?: string
+          user_id: string
+          visibility?: string
+          yarn_weight?: string | null
+        }
+        Update: {
+          abbreviations?: string | null
+          ai_model?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          difficulty?: string | null
+          gauge?: string | null
+          hook_size_mm?: number | null
+          id?: string
+          image_url?: string | null
+          instructions?: string
+          materials?: string | null
+          name?: string
+          notes?: string | null
+          origin?: string
+          project_type?: string | null
+          square_size_cm?: number | null
+          technique?: string | null
+          total_squares?: number | null
+          updated_at?: string
+          user_id?: string
+          visibility?: string
+          yarn_weight?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patterns_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null

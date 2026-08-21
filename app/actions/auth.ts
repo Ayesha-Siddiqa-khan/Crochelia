@@ -7,25 +7,34 @@ import { signInSchema, signUpSchema } from "@/lib/validation/auth";
 export interface AuthActionResult {
   error?: string;
   fieldErrors?: Record<string, string>;
+  // Non-sensitive fields only — never echo a password back to the client.
+  values?: { displayName?: string; username?: string; email?: string };
 }
 
 export async function signUpAction(
   _prev: AuthActionResult,
   formData: FormData,
 ): Promise<AuthActionResult> {
-  const parsed = signUpSchema.safeParse({
+  const raw = {
     displayName: formData.get("displayName"),
     username: formData.get("username"),
     email: formData.get("email"),
     password: formData.get("password"),
-  });
+  };
+  const values = {
+    displayName: String(raw.displayName ?? ""),
+    username: String(raw.username ?? ""),
+    email: String(raw.email ?? ""),
+  };
+
+  const parsed = signUpSchema.safeParse(raw);
 
   if (!parsed.success) {
     const fieldErrors: Record<string, string> = {};
     for (const issue of parsed.error.issues) {
       fieldErrors[String(issue.path[0])] = issue.message;
     }
-    return { fieldErrors };
+    return { fieldErrors, values };
   }
 
   const supabase = await createClient();
@@ -40,7 +49,7 @@ export async function signUpAction(
   });
 
   if (error) {
-    return { error: error.message };
+    return { error: error.message, values };
   }
 
   redirect("/dashboard");
@@ -50,24 +59,27 @@ export async function signInAction(
   _prev: AuthActionResult,
   formData: FormData,
 ): Promise<AuthActionResult> {
-  const parsed = signInSchema.safeParse({
+  const raw = {
     email: formData.get("email"),
     password: formData.get("password"),
-  });
+  };
+  const values = { email: String(raw.email ?? "") };
+
+  const parsed = signInSchema.safeParse(raw);
 
   if (!parsed.success) {
     const fieldErrors: Record<string, string> = {};
     for (const issue of parsed.error.issues) {
       fieldErrors[String(issue.path[0])] = issue.message;
     }
-    return { fieldErrors };
+    return { fieldErrors, values };
   }
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error) {
-    return { error: "That email and password combination doesn't match our records." };
+    return { error: "That email and password combination doesn't match our records.", values };
   }
 
   redirect("/dashboard");

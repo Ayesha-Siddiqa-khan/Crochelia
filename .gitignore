@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# secrets and credentials
+pass/
+.mcp.json
+
+# tooling artifacts
+.playwright-mcp/
+graphify-out/
+.graphify_python
+.agents/
+.claude/
+skills-lock.json

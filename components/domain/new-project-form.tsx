@@ -70,7 +70,13 @@ export function NewProjectForm() {
   return (
     <form action={formAction} className="flex flex-col gap-6">
       <Field label="Project name" error={state.fieldErrors?.name}>
-        <Input id="name" name="name" required placeholder="Pink Granny Cardigan" />
+        <Input
+          id="name"
+          name="name"
+          required
+          placeholder="Pink Granny Cardigan"
+          defaultValue={state.values?.name}
+        />
       </Field>
 
       <Field label="Type" error={state.fieldErrors?.type}>
@@ -106,7 +112,13 @@ export function NewProjectForm() {
       </Field>
 
       <Field label="Description" error={state.fieldErrors?.description}>
-        <Textarea id="description" name="description" rows={3} placeholder="What are you making, and for whom?" />
+        <Textarea
+          id="description"
+          name="description"
+          rows={3}
+          placeholder="What are you making, and for whom?"
+          defaultValue={state.values?.description}
+        />
       </Field>
 
       {(isGarmentType(type) || type === "granny_square") && (

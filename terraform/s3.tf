@@ -1,17 +1,17 @@
 
 # S3 Bucket
 resource "aws_s3_bucket" "main" {
-  bucket = "crochelia-dev-app-assets-dvque00k"
+  bucket        = "crochelia-dev-app-assets-dvque00k"
   force_destroy = false
 
   tags = {
-    Name                  = "${var.project_name}-bucket"
-    Project               = var.project_name
-    TerraPilotProject     = var.project_name
+    Name                   = "${var.project_name}-bucket"
+    Project                = var.project_name
+    TerraPilotProject      = var.project_name
     TerraPilotResourceType = "s3-bucket"
-    Environment           = var.environment
-    ManagedBy             = "TerraPilot"
-    CostSensitive         = "true"
+    Environment            = var.environment
+    ManagedBy              = "TerraPilot"
+    CostSensitive          = "true"
   }
 }
 

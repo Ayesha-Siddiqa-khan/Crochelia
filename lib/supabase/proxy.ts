@@ -2,10 +2,26 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "./database.types";
 
-const PUBLIC_PREFIXES = ["/sign-in", "/sign-up", "/auth", "/api/health", "/_next", "/favicon.ico"];
+const PUBLIC_PREFIXES = [
+  "/sign-in",
+  "/sign-up",
+  "/auth",
+  "/api/health",
+  "/_next",
+  "/favicon.ico",
+  "/about",
+  "/contact",
+  "/privacy",
+  "/terms",
+];
 
 function isPublicPath(pathname: string) {
-  if (pathname === "/" || pathname.startsWith("/discover") || pathname.startsWith("/patterns") || pathname.startsWith("/community")) {
+  if (
+    pathname === "/" ||
+    pathname.startsWith("/discover") ||
+    pathname.startsWith("/patterns") ||
+    pathname.startsWith("/community")
+  ) {
     return true;
   }
   return PUBLIC_PREFIXES.some((prefix) => pathname.startsWith(prefix));
@@ -46,9 +62,20 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (isAuthed && (request.nextUrl.pathname === "/sign-in" || request.nextUrl.pathname === "/sign-up")) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
-    return NextResponse.redirect(url);
+    // Use the canonical check here, not getClaims(). A JWT can pass local
+    // signature verification (isAuthed above) even after the underlying user
+    // no longer exists — e.g. deleted, banned. If this redirect trusted that
+    // same fast check, it would bounce back to /dashboard, whose layout does
+    // the canonical check, finds no real user, and bounces back to /sign-in:
+    // an infinite loop with no escape but manually clearing cookies.
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/dashboard";
+      return NextResponse.redirect(url);
+    }
   }
 
   return response;

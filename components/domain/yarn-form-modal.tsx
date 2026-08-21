@@ -37,19 +37,34 @@ export function YarnFormModal() {
         <form action={formAction} className="flex flex-col gap-4">
           <div className="grid grid-cols-2 gap-3">
             <Field label="Name" error={state.fieldErrors?.name}>
-              <Input name="name" required placeholder="Sugar Bush Cotton" />
+              <Input
+                name="name"
+                required
+                placeholder="Sugar Bush Cotton"
+                defaultValue={state.values?.name}
+              />
             </Field>
             <Field label="Brand" error={state.fieldErrors?.brand}>
-              <Input name="brand" placeholder="Optional" />
+              <Input name="brand" placeholder="Optional" defaultValue={state.values?.brand} />
             </Field>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Colour name" error={state.fieldErrors?.colorName}>
-              <Input name="colorName" required placeholder="Soft Pink" />
+              <Input
+                name="colorName"
+                required
+                placeholder="Soft Pink"
+                defaultValue={state.values?.colorName}
+              />
             </Field>
             <Field label="Swatch colour" error={state.fieldErrors?.colorSwatchHex}>
-              <Input name="colorSwatchHex" type="color" defaultValue="#FBA5C0" className="h-11 p-1" />
+              <Input
+                name="colorSwatchHex"
+                type="color"
+                defaultValue={state.values?.colorSwatchHex ?? "#FBA5C0"}
+                className="h-11 p-1"
+              />
             </Field>
           </div>
 
@@ -57,7 +72,7 @@ export function YarnFormModal() {
             <Field label="Weight class" error={state.fieldErrors?.weightClass}>
               <select
                 name="weightClass"
-                defaultValue="worsted"
+                defaultValue={state.values?.weightClass ?? "worsted"}
                 className="h-11 w-full rounded-[var(--radius-md)] border border-border-default bg-surface-raised px-3 text-sm capitalize"
               >
                 {WEIGHT_CLASSES.map((w) => (
@@ -68,21 +83,38 @@ export function YarnFormModal() {
               </select>
             </Field>
             <Field label="Fibre" error={state.fieldErrors?.fiber}>
-              <Input name="fiber" placeholder="Cotton, acrylic..." />
+              <Input name="fiber" placeholder="Cotton, acrylic..." defaultValue={state.values?.fiber} />
             </Field>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Total (g)" error={state.fieldErrors?.totalGrams}>
-              <Input name="totalGrams" type="number" min={0} required defaultValue={100} />
+              <Input
+                name="totalGrams"
+                type="number"
+                min={0}
+                required
+                defaultValue={state.values?.totalGrams ?? 100}
+              />
             </Field>
             <Field label="Remaining (g)" error={state.fieldErrors?.remainingGrams}>
-              <Input name="remainingGrams" type="number" min={0} required defaultValue={100} />
+              <Input
+                name="remainingGrams"
+                type="number"
+                min={0}
+                required
+                defaultValue={state.values?.remainingGrams ?? 100}
+              />
             </Field>
           </div>
 
           <Field label="Notes" error={state.fieldErrors?.notes}>
-            <Textarea name="notes" rows={2} placeholder="Dye lot, where you bought it..." />
+            <Textarea
+              name="notes"
+              rows={2}
+              placeholder="Dye lot, where you bought it..."
+              defaultValue={state.values?.notes}
+            />
           </Field>
 
           {state.error && (

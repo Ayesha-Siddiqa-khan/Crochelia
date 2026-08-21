@@ -21,13 +21,32 @@ export default function SignUpPage() {
 
       <form action={formAction} className="mt-6 flex flex-col gap-4">
         <Field label="Name" name="displayName" error={state.fieldErrors?.displayName}>
-          <Input id="displayName" name="displayName" autoComplete="name" invalid={!!state.fieldErrors?.displayName} />
+          <Input
+            id="displayName"
+            name="displayName"
+            autoComplete="name"
+            defaultValue={state.values?.displayName}
+            invalid={!!state.fieldErrors?.displayName}
+          />
         </Field>
         <Field label="Username" name="username" error={state.fieldErrors?.username}>
-          <Input id="username" name="username" autoComplete="username" invalid={!!state.fieldErrors?.username} />
+          <Input
+            id="username"
+            name="username"
+            autoComplete="username"
+            defaultValue={state.values?.username}
+            invalid={!!state.fieldErrors?.username}
+          />
         </Field>
         <Field label="Email" name="email" error={state.fieldErrors?.email}>
-          <Input id="email" type="email" name="email" autoComplete="email" invalid={!!state.fieldErrors?.email} />
+          <Input
+            id="email"
+            type="email"
+            name="email"
+            autoComplete="email"
+            defaultValue={state.values?.email}
+            invalid={!!state.fieldErrors?.email}
+          />
         </Field>
         <Field label="Password" name="password" error={state.fieldErrors?.password}>
           <Input

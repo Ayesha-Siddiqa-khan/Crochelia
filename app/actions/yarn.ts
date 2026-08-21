@@ -6,9 +6,22 @@ import { getCurrentUser } from "@/lib/auth/current-user";
 import { createYarnStashItem, deleteYarnStashItem } from "@/lib/db/yarn";
 import { yarnStashSchema } from "@/lib/validation/yarn";
 
+export interface YarnFormValues {
+  name: string;
+  brand: string;
+  colorName: string;
+  colorSwatchHex: string;
+  weightClass: string;
+  fiber: string;
+  totalGrams: string;
+  remainingGrams: string;
+  notes: string;
+}
+
 export interface YarnActionResult {
   error?: string;
   fieldErrors?: Record<string, string>;
+  values?: YarnFormValues;
 }
 
 export async function createYarnStashAction(
@@ -18,7 +31,7 @@ export async function createYarnStashAction(
   const user = await getCurrentUser();
   if (!user) redirect("/sign-in");
 
-  const parsed = yarnStashSchema.safeParse({
+  const raw = {
     name: formData.get("name"),
     brand: formData.get("brand"),
     colorName: formData.get("colorName"),
@@ -28,18 +41,34 @@ export async function createYarnStashAction(
     totalGrams: formData.get("totalGrams"),
     remainingGrams: formData.get("remainingGrams"),
     notes: formData.get("notes"),
-  });
+  };
+  const values: YarnFormValues = {
+    name: String(raw.name ?? ""),
+    brand: String(raw.brand ?? ""),
+    colorName: String(raw.colorName ?? ""),
+    colorSwatchHex: String(raw.colorSwatchHex ?? "#fba5c0"),
+    weightClass: String(raw.weightClass ?? "worsted"),
+    fiber: String(raw.fiber ?? ""),
+    totalGrams: String(raw.totalGrams ?? ""),
+    remainingGrams: String(raw.remainingGrams ?? ""),
+    notes: String(raw.notes ?? ""),
+  };
+
+  const parsed = yarnStashSchema.safeParse(raw);
 
   if (!parsed.success) {
     const fieldErrors: Record<string, string> = {};
     for (const issue of parsed.error.issues) {
       fieldErrors[String(issue.path[0])] = issue.message;
     }
-    return { fieldErrors };
+    return { fieldErrors, values };
   }
 
   if (parsed.data.remainingGrams > parsed.data.totalGrams) {
-    return { fieldErrors: { remainingGrams: "Can't be more than the total you started with." } };
+    return {
+      fieldErrors: { remainingGrams: "Can't be more than the total you started with." },
+      values,
+    };
   }
 
   await createYarnStashItem({

@@ -1,0 +1,38 @@
+<svg width="800" height="900" viewBox="0 0 800 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="grannyTile" width="55" height="55" patternUnits="userSpaceOnUse">
+      <rect width="55" height="55" fill="#FFF6F8" />
+      <rect x="3" y="3" width="49" height="49" rx="5" fill="#F5EBDC" />
+      <rect x="10" y="10" width="35" height="35" rx="4" fill="#FBA5C0" />
+      <rect x="17" y="17" width="21" height="21" rx="3" fill="#F27CA3" />
+      <circle cx="27.5" cy="27.5" r="4" fill="#FFF6F8" />
+    </pattern>
+  </defs>
+
+  <rect width="800" height="900" fill="#FFFFFF" />
+  <circle cx="400" cy="450" r="360" fill="#FFF6F8" opacity="0.6" />
+
+  <!-- Left sleeve: right edge (x=260) butts exactly against the front panel's armhole edge -->
+  <rect x="130" y="230" width="130" height="220" fill="url(#grannyTile)" stroke="#AE3159" stroke-width="4" />
+  <!-- Right sleeve: left edge (x=540) butts exactly against the front panel's armhole edge -->
+  <rect x="540" y="230" width="130" height="220" fill="url(#grannyTile)" stroke="#AE3159" stroke-width="4" />
+
+  <!-- Left front panel: shoulder(260-370,200-260) + body(260-395,260-750), stepped neckline -->
+  <polygon
+    points="260,200 370,200 370,260 395,260 395,750 260,750"
+    fill="url(#grannyTile)" stroke="#AE3159" stroke-width="4" stroke-linejoin="round" />
+
+  <!-- Right front panel: mirrored -->
+  <polygon
+    points="540,200 430,200 430,260 405,260 405,750 540,750"
+    fill="url(#grannyTile)" stroke="#AE3159" stroke-width="4" stroke-linejoin="round" />
+
+  <!-- Centre-front opening gap -->
+  <rect x="395" y="255" width="10" height="500" fill="#FFFFFF" />
+
+  <!-- Buttons -->
+  <circle cx="415" cy="320" r="6" fill="#AE3159" />
+  <circle cx="415" cy="420" r="6" fill="#AE3159" />
+  <circle cx="415" cy="520" r="6" fill="#AE3159" />
+  <circle cx="415" cy="620" r="6" fill="#AE3159" />
+</svg>

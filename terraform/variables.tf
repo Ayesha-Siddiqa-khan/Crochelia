@@ -396,40 +396,40 @@ variable "enable_control_plane_s3_read_only" {
 variable "ec2_instances" {
   description = "List of EC2 instance configurations"
   type = list(object({
-    name                  = string
-    instance_type         = string
-    quantity              = number
-    subnet_type           = string
-    associate_public_ip   = bool
-    root_volume_size      = number
-    root_volume_type      = string
-    encrypt_root_volume   = bool
-    role                  = string
+    name                = string
+    instance_type       = string
+    quantity            = number
+    subnet_type         = string
+    associate_public_ip = bool
+    root_volume_size    = number
+    root_volume_type    = string
+    encrypt_root_volume = bool
+    role                = string
   }))
-  default     = [
+  default = [
     {
-        "name": "c7i-flex-large",
-        "instance_type": "c7i-flex.large",
-        "quantity": 1,
-        "subnet_type": "public",
-        "associate_public_ip": true,
-        "root_volume_size": 20,
-        "root_volume_type": "gp3",
-        "encrypt_root_volume": false,
-        "role": "kubernetes-master"
+      "name" : "c7i-flex-large",
+      "instance_type" : "c7i-flex.large",
+      "quantity" : 1,
+      "subnet_type" : "public",
+      "associate_public_ip" : true,
+      "root_volume_size" : 20,
+      "root_volume_type" : "gp3",
+      "encrypt_root_volume" : false,
+      "role" : "kubernetes-master"
     },
     {
-        "name": "t3-small",
-        "instance_type": "t3.small",
-        "quantity": 1,
-        "subnet_type": "public",
-        "associate_public_ip": true,
-        "root_volume_size": 20,
-        "root_volume_type": "gp3",
-        "encrypt_root_volume": false,
-        "role": "kubernetes-worker"
+      "name" : "t3-small",
+      "instance_type" : "t3.small",
+      "quantity" : 1,
+      "subnet_type" : "public",
+      "associate_public_ip" : true,
+      "root_volume_size" : 20,
+      "root_volume_type" : "gp3",
+      "encrypt_root_volume" : false,
+      "role" : "kubernetes-worker"
     }
-]
+  ]
 }
 
 variable "iam_users" {
@@ -444,7 +444,7 @@ variable "iam_users" {
     attached_policies    = list(string)
     tags                 = map(string)
   }))
-  default     = []
+  default = []
 }
 
 variable "iam_groups" {
@@ -455,7 +455,7 @@ variable "iam_groups" {
     attached_policies = list(string)
     users             = list(string)
   }))
-  default     = []
+  default = []
 }
 
 variable "iam_roles" {
@@ -468,7 +468,7 @@ variable "iam_roles" {
     inline_policies   = list(string)
     tags              = map(string)
   }))
-  default     = []
+  default = []
 }
 
 

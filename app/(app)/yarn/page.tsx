@@ -1,7 +1,7 @@
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { listYarnStash } from "@/lib/db/yarn";
 import { YarnFormModal } from "@/components/domain/yarn-form-modal";
-import { YarnCard } from "@/components/domain/yarn-card";
+import { YarnBrowser } from "@/components/domain/yarn-browser";
 import { EmptyState } from "@/components/feedback/empty-state";
 
 export default async function YarnStashPage() {
@@ -25,10 +25,8 @@ export default async function YarnStashPage() {
           description="Add the yarn you own so Crochelia can tell you what's covered before you start a project."
         />
       ) : (
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {stash.map((yarn) => (
-            <YarnCard key={yarn.id} yarn={yarn} />
-          ))}
+        <div className="mt-6">
+          <YarnBrowser items={stash} />
         </div>
       )}
     </div>

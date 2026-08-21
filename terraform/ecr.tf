@@ -9,13 +9,13 @@ resource "aws_ecr_repository" "main" {
   }
 
   tags = {
-    Name                  = "${var.project_name}"
-    Project               = var.project_name
-    TerraPilotProject     = var.project_name
+    Name                   = "${var.project_name}"
+    Project                = var.project_name
+    TerraPilotProject      = var.project_name
     TerraPilotResourceType = "ecr-repository"
-    Environment           = var.environment
-    ManagedBy             = "TerraPilot"
-    CostSensitive         = "true"
+    Environment            = var.environment
+    ManagedBy              = "TerraPilot"
+    CostSensitive          = "true"
   }
 }
 

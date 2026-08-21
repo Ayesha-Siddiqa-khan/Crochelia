@@ -27,6 +27,7 @@ export default function SignInPage() {
             type="email"
             name="email"
             autoComplete="email"
+            defaultValue={state.values?.email}
             invalid={!!state.fieldErrors?.email}
           />
           {state.fieldErrors?.email && (

@@ -9,6 +9,7 @@ import { createProjectSchema } from "@/lib/validation/project";
 export interface ProjectActionResult {
   error?: string;
   fieldErrors?: Record<string, string>;
+  values?: { name?: string; description?: string };
 }
 
 export async function createProjectAction(
@@ -18,7 +19,7 @@ export async function createProjectAction(
   const user = await getCurrentUser();
   if (!user) redirect("/sign-in");
 
-  const parsed = createProjectSchema.safeParse({
+  const raw = {
     name: formData.get("name"),
     type: formData.get("type"),
     description: formData.get("description"),
@@ -27,14 +28,20 @@ export async function createProjectAction(
     squareSizeCm: formData.get("squareSizeCm") || undefined,
     hookSizeMm: formData.get("hookSizeMm") || undefined,
     totalSquares: formData.get("totalSquares") || undefined,
-  });
+  };
+  const values = {
+    name: String(formData.get("name") ?? ""),
+    description: String(formData.get("description") ?? ""),
+  };
+
+  const parsed = createProjectSchema.safeParse(raw);
 
   if (!parsed.success) {
     const fieldErrors: Record<string, string> = {};
     for (const issue of parsed.error.issues) {
       fieldErrors[String(issue.path[0])] = issue.message;
     }
-    return { fieldErrors };
+    return { fieldErrors, values };
   }
 
   const { name, type, description, size, difficulty, squareSizeCm, hookSizeMm, totalSquares } =
