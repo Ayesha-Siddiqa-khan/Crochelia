@@ -134,12 +134,24 @@ jobs:
             --from-literal=DATABASE_URL="${{ secrets.DATABASE_URL }}" \
             -n crochelia --dry-run=client -o yaml | kubectl apply -f -
 
+      - name: Create configmap
+        run: |
+          kubectl create configmap crochelia-config \
+            --from-literal=NODE_ENV="production" \
+            --from-literal=NEXT_PUBLIC_SITE_URL="${{ secrets.NEXT_PUBLIC_SITE_URL }}" \
+            --from-literal=NEXT_PUBLIC_SUPABASE_URL="${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" \
+            --from-literal=NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}" \
+            -n crochelia --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Clean up stale pods
+        run: |
+          kubectl delete pods -n crochelia -l app=crochelia --ignore-not-found
+
       - name: Deploy
         run: |
           TAG=${{ github.sha }}
           IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
           sed -i "s|__IMAGE__:__TAG__|${IMAGE}:${TAG}|g" k8s/crochelia/deployment.yaml
-          kubectl apply -f k8s/crochelia/configmap.yaml
           kubectl apply -f k8s/crochelia/deployment.yaml
           kubectl apply -f k8s/crochelia/service.yaml
           kubectl apply -f k8s/crochelia/hpa.yaml
