@@ -61,12 +61,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: azure/k8s-set-context@v4
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+      - name: Set up kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
+          cat ~/.kube/config | head -5
 
-      - run: |
+      - name: Deploy
+        env:
+          KUBECONFIG: ~/.kube/config
+        run: |
           TAG=${{ github.sha }}
           IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
           sed -i "s|__IMAGE__:__TAG__|${IMAGE}:${TAG}|g" k8s/crochelia/deployment.yaml
