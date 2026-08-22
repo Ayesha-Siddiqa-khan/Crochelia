@@ -92,29 +92,29 @@ jobs:
         run: |
           kubectl create namespace crochelia --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Validate GHCR token
-        env:
-          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Validate GHCR access
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify image is pullable
         run: |
-          echo "=== Validating GHCR access ==="
           IMAGE_REF="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
-          echo "Image: $IMAGE_REF"
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -u "${{ github.actor }}:$GHCR_TOKEN" \
-            "https://ghcr.io/v2/${{ env.IMAGE_NAME }}/manifests/${{ github.sha }}" \
-            -H "Accept: application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.v2+json,application/vnd.docker.distribution.manifest.list.v2+json")
-          echo "GHCR manifest check status: $HTTP_STATUS"
-          if [ "$HTTP_STATUS" != "200" ]; then
+          echo "=== Validating image: $IMAGE_REF ==="
+          if docker manifest inspect "$IMAGE_REF" > /dev/null 2>&1; then
+            echo "Image manifest accessible from GHCR."
+          else
             echo ""
-            echo "ERROR: Cannot pull image from GHCR (HTTP $HTTP_STATUS)."
-            echo "The GITHUB_TOKEN lacks packages:read scope."
+            echo "WARNING: Cannot inspect image manifest at $IMAGE_REF"
+            echo "The image may not exist yet or GITHUB_TOKEN lacks packages:read."
             echo ""
             echo "FIX: Go to repo Settings > Actions > General > Workflow permissions"
             echo "     Select 'Read repository contents and packages permissions'"
             echo "     Then re-run this workflow."
             exit 1
           fi
-          echo "GHCR access validated."
 
       - name: Create GHCR pull secret
         env:
