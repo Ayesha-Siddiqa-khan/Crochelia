@@ -25,6 +25,12 @@ spec:
       # Graceful shutdown: give in-flight requests time to finish before
       # the container is killed. PROJECT.md's DevOps requirements.
       terminationGracePeriodSeconds: 30
+      # Single-node cluster: tolerate control-plane taint so pods can be scheduled.
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
       containers:
         - name: crochelia
           image: __IMAGE__:__TAG__ # set by CI (ghcr.io/<org>/crochelia:<sha>) — see .github/workflows/ci.yml
