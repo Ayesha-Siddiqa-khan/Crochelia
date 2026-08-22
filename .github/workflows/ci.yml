@@ -141,9 +141,11 @@ jobs:
             --from-literal=NEXT_PUBLIC_SITE_URL="${{ secrets.NEXT_PUBLIC_SITE_URL }}" \
             -n crochelia --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Clean up stale pods
+      - name: Clean up stale resources
         run: |
-          kubectl delete pods -n crochelia -l app=crochelia --ignore-not-found
+          kubectl delete deployment crochelia -n crochelia --ignore-not-found
+          kubectl delete rs -n crochelia --all --ignore-not-found
+          kubectl delete pods -n crochelia --all --ignore-not-found
 
       - name: Deploy
         run: |
