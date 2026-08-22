@@ -52,6 +52,10 @@ graphify-out/
 .claude/
 skills-lock.json
 
+# k8s secrets — real values only ever go in untracked *.local.yaml copies
+k8s/**/secret.local.yaml
+k8s/**/*.local.yaml
+
 # terraform
 **/.terraform/*
 *.tfstate

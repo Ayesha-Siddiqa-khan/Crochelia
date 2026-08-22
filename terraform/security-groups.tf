@@ -55,6 +55,14 @@ resource "aws_security_group" "ec2_consolidated" {
   }
 
   ingress {
+    description = "Calico BGP"
+    from_port   = 179
+    to_port     = 179
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  ingress {
     description = "Kube Scheduler"
     from_port   = 10259
     to_port     = 10259

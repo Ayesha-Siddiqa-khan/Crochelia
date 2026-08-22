@@ -5,6 +5,9 @@ const supabaseHostname = process.env.NEXT_PUBLIC_SUPABASE_URL
   : undefined;
 
 const nextConfig: NextConfig = {
+  // Self-contained server bundle for the Docker runtime stage — no need to
+  // ship node_modules. PROJECT.md §10.10.
+  output: "standalone",
   images: {
     // Only ever serves SVGs we author ourselves under /public — user-uploaded
     // patterns/products are restricted to PNG/JPEG/WEBP (magic-byte checked)
