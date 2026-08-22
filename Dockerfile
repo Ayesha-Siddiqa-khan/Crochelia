@@ -23,9 +23,8 @@ ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
 ENV NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV NODE_ENV=production
 
-RUN npx next build --no-turbopack
+RUN npm run build && ls -la .next/
 
 # ---- runner ---------------------------------------------------------------
 FROM node:22-alpine AS runner
