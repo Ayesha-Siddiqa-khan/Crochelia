@@ -1,0 +1,21 @@
+node_modules
+.next
+.git
+.env*
+!.env.example
+*.log
+npm-debug.log*
+
+# Not part of the application image — TerraPilot's infra output and
+# unrelated tooling/docs living alongside this repo.
+terraform
+k8s
+.agents
+.claude
+.playwright-mcp
+graphify-out
+tests
+*.md
+!README.md
+Crochelia_PRD*.docx
+pass
