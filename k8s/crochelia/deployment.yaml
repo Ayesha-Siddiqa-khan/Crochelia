@@ -20,6 +20,8 @@ spec:
       labels:
         app: crochelia
     spec:
+      imagePullSecrets:
+        - name: ghcr-pull
       # Graceful shutdown: give in-flight requests time to finish before
       # the container is killed. PROJECT.md's DevOps requirements.
       terminationGracePeriodSeconds: 30

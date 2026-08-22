@@ -9,6 +9,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ayesha-siddiqa-khan/crochelia
+  KUBECONFIG: /home/runner/.kube/config
 
 jobs:
   ci:
@@ -61,29 +62,57 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up kubeconfig
+      - name: Write kubeconfig
+        env:
+          KUBECONFIG_CONTENT: ${{ secrets.KUBE_CONFIG }}
         run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
-          chmod 600 ~/.kube/config
-          grep "server:" ~/.kube/config || echo "NO SERVER FOUND IN KUBECONFIG"
+          mkdir -p "$HOME/.kube"
+          printf '%s\n' "$KUBECONFIG_CONTENT" > "$HOME/.kube/config"
+          chmod 600 "$HOME/.kube/config"
+
+      - name: Verify kubeconfig
+        run: |
+          echo "=== kubectl version ==="
+          kubectl version --client
+          echo "=== cluster server ==="
+          kubectl config view -o jsonpath='{.clusters[0].cluster.server}'
+          echo ""
+          echo "=== current context ==="
+          kubectl config current-context
+          echo "=== reachable? ==="
+          kubectl cluster-info
+
+      - name: Create namespace
+        run: |
+          kubectl create namespace crochelia --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Create GHCR pull secret
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          kubectl create secret docker-registry ghcr-pull \
+            --docker-server=ghcr.io \
+            --docker-username=${{ github.actor }} \
+            --docker-password="$GHCR_TOKEN" \
+            -n crochelia --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Create app secrets
+        run: |
+          kubectl create secret generic crochelia-secret \
+            --from-literal=SUPABASE_SECRET_KEY="${{ secrets.SUPABASE_SECRET_KEY }}" \
+            --from-literal=ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}" \
+            --from-literal=DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            -n crochelia --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy
-        env:
-          KUBECONFIG: ~/.kube/config
         run: |
           TAG=${{ github.sha }}
           IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
           sed -i "s|__IMAGE__:__TAG__|${IMAGE}:${TAG}|g" k8s/crochelia/deployment.yaml
-          kubectl create namespace crochelia --dry-run=client -o yaml | kubectl apply -f -
-          kubectl create secret generic crochelia-secret \
-            --from-literal=SUPABASE_SECRET_KEY=${{ secrets.SUPABASE_SECRET_KEY }} \
-            --from-literal=ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }} \
-            --from-literal=DATABASE_URL=${{ secrets.DATABASE_URL }} \
-            -n crochelia --dry-run=client -o yaml | kubectl apply -f -
           kubectl apply -f k8s/crochelia/configmap.yaml
           kubectl apply -f k8s/crochelia/deployment.yaml
           kubectl apply -f k8s/crochelia/service.yaml
-          kubectl apply -f k8s/crochelia/ingress.yaml
           kubectl apply -f k8s/crochelia/hpa.yaml
           kubectl rollout status deployment/crochelia -n crochelia --timeout=300s
+          echo "=== Pods ==="
+          kubectl get pods -n crochelia
