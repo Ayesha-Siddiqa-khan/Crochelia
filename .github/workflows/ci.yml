@@ -46,11 +46,12 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: type=sha,prefix=
 
+      - uses: docker/setup-buildx-action@v3
+
       - uses: docker/build-push-action@v6
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
-          context: ${{ github.workspace }}
-          file: Dockerfile
+          context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
