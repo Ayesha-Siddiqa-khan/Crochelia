@@ -81,6 +81,12 @@ jobs:
           kubectl config current-context
           echo "=== reachable? ==="
           kubectl cluster-info
+          echo "=== nodes ==="
+          kubectl get nodes -o wide
+          echo "=== node conditions ==="
+          kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}: {.status.conditions[?(@.type=="Ready")].status}{"\n"}{end}'
+          echo "=== kube-system pods ==="
+          kubectl get pods -n kube-system -o wide
 
       - name: Create namespace
         run: |
@@ -116,3 +122,28 @@ jobs:
           kubectl rollout status deployment/crochelia -n crochelia --timeout=300s
           echo "=== Pods ==="
           kubectl get pods -n crochelia
+
+      - name: Debug on failure
+        if: failure()
+        run: |
+          echo "=== All pods ==="
+          kubectl get pods -A -o wide
+          echo "=== Node details ==="
+          kubectl describe nodes
+          echo "=== Crochelia pod describe ==="
+          kubectl describe pods -n crochelia
+          echo "=== Crochelia pod logs ==="
+          for pod in $(kubectl get pods -n crochelia -o name 2>/dev/null); do
+            echo "--- $pod ---"
+            kubectl logs "$pod" -n crochelia --tail=50 2>&1 || true
+            echo "--- $pod previous ---"
+            kubectl logs "$pod" -n crochelia --tail=50 --previous 2>&1 || true
+          done
+          echo "=== Events ==="
+          kubectl get events -n crochelia --sort-by=.lastTimestamp 2>&1 || true
+          echo "=== Kube-system pods ==="
+          kubectl get pods -n kube-system -o wide
+          echo "=== Kubelet status ==="
+          kubectl get nodes -o wide
+          echo "=== Node conditions ==="
+          kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{range .status.conditions[*]}  {.type}: {.status} - {.message}{"\n"}{end}{end}'
