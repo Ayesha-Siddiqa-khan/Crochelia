@@ -25,7 +25,7 @@ ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-RUN npm run build
+RUN npx next build --no-turbopack
 
 # ---- runner ---------------------------------------------------------------
 FROM node:22-alpine AS runner
