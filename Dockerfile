@@ -7,10 +7,6 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 # ---- builder ------------------------------------------------------------
-# NEXT_PUBLIC_* values are inlined into the client bundle at build time.
-# They are public by design (Supabase URL/publishable key), so passing them
-# as build args lets one Dockerfile build correct images per environment
-# without baking any one environment's values into the image definition.
 FROM node:22-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
@@ -24,7 +20,7 @@ ENV NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN npm run build && ls -la .next/
+RUN npm run build
 
 # ---- runner ---------------------------------------------------------------
 FROM node:22-alpine AS runner
@@ -37,19 +33,12 @@ ENV HOSTNAME=0.0.0.0
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs
 
-# output: 'standalone' produces a self-contained server — no node_modules
-# or full source needed in the final image.
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
-
-RUN mkdir .next && chown nextjs:nodejs .next
-
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder /app/package.json ./package.json
 
 USER nextjs
 EXPOSE 3000
 
-# Secrets (SUPABASE_SECRET_KEY, ANTHROPIC_API_KEY) are injected at runtime
-# by the deployment platform (K8s Secret / Vercel env) — never baked into
-# this image. See .env.example for the full variable list.
-CMD ["node", "server.js"]
+CMD ["npx", "next", "start"]
