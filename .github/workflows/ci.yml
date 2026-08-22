@@ -53,7 +53,7 @@ jobs:
 
   deploy:
     needs: ci
-    if: false # TODO: enable once KUBE_CONFIG secret is set up
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -70,9 +70,13 @@ jobs:
           TAG=${{ github.sha }}
           IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
           sed -i "s|__IMAGE__:__TAG__|${IMAGE}:${TAG}|g" k8s/crochelia/deployment.yaml
-          kubectl apply -f k8s/crochelia/namespace.yaml
+          kubectl create namespace crochelia --dry-run=client -o yaml | kubectl apply -f -
+          kubectl create secret generic crochelia-secret \
+            --from-literal=SUPABASE_SECRET_KEY=${{ secrets.SUPABASE_SECRET_KEY }} \
+            --from-literal=ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }} \
+            --from-literal=DATABASE_URL=${{ secrets.DATABASE_URL }} \
+            -n crochelia --dry-run=client -o yaml | kubectl apply -f -
           kubectl apply -f k8s/crochelia/configmap.yaml
-          kubectl apply -f k8s/crochelia/secret.yaml
           kubectl apply -f k8s/crochelia/deployment.yaml
           kubectl apply -f k8s/crochelia/service.yaml
           kubectl apply -f k8s/crochelia/ingress.yaml
