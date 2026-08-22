@@ -28,6 +28,12 @@ function isPublicPath(pathname: string) {
 }
 
 export async function updateSession(request: NextRequest) {
+  // Skip Supabase entirely for public paths — avoids crashing on health
+  // checks when env vars are missing and keeps latency low for public pages.
+  if (isPublicPath(request.nextUrl.pathname)) {
+    return NextResponse.next({ request });
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient<Database>(
@@ -54,14 +60,14 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const isAuthed = Boolean(data?.claims);
 
-  if (!isAuthed && !isPublicPath(request.nextUrl.pathname)) {
+  if (!isAuthed) {
     const url = request.nextUrl.clone();
     url.pathname = "/sign-in";
     url.searchParams.set("next", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
 
-  if (isAuthed && (request.nextUrl.pathname === "/sign-in" || request.nextUrl.pathname === "/sign-up")) {
+  if (request.nextUrl.pathname === "/sign-in" || request.nextUrl.pathname === "/sign-up") {
     // Use the canonical check here, not getClaims(). A JWT can pass local
     // signature verification (isAuthed above) even after the underlying user
     // no longer exists — e.g. deleted, banned. If this redirect trusted that
