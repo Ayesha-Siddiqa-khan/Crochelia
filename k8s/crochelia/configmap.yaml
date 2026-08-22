@@ -6,3 +6,6 @@ metadata:
 data:
   NODE_ENV: "production"
   NEXT_PUBLIC_SITE_URL: "https://crochelia.example.com" # replace with the real deployed hostname
+  # Server-only env vars (NOT NEXT_PUBLIC_* — Next.js inlines those at build time)
+  SUPABASE_URL: "" # injected by CI from secrets
+  SUPABASE_ANON_KEY: "" # injected by CI from secrets

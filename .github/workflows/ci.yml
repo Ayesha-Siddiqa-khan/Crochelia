@@ -139,8 +139,8 @@ jobs:
           kubectl create configmap crochelia-config \
             --from-literal=NODE_ENV="production" \
             --from-literal=NEXT_PUBLIC_SITE_URL="${{ secrets.NEXT_PUBLIC_SITE_URL }}" \
-            --from-literal=NEXT_PUBLIC_SUPABASE_URL="${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" \
-            --from-literal=NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}" \
+            --from-literal=SUPABASE_URL="${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" \
+            --from-literal=SUPABASE_ANON_KEY="${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}" \
             -n crochelia --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Clean up stale pods
