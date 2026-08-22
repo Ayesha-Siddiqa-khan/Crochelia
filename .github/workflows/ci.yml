@@ -41,9 +41,6 @@ jobs:
 
       - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          ls -la Dockerfile
-          wc -c Dockerfile
-          head -3 Dockerfile
           docker build \
             --build-arg NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }} \
             --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }} \
