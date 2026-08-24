@@ -360,18 +360,6 @@ write_join_command_to_ssm() {
   log "Join command stored in SSM Parameter Store."
 }
 
-switch_default_kubeconfig_to_public() {
-  if [ -z "$${PUBLIC_IP:-}" ]; then
-    log "No public IP detected. Keeping default kubeconfig on the private API endpoint."
-    return 0
-  fi
-
-  log "Switching default kubeconfig to public API endpoint: $PUBLIC_IP"
-  kubectl --kubeconfig=/home/ubuntu/.kube/config config set-cluster kubernetes --server="https://$${PUBLIC_IP}:6443"
-  kubectl --kubeconfig=/root/.kube/config config set-cluster kubernetes --server="https://$${PUBLIC_IP}:6443"
-  chown -R ubuntu:ubuntu /home/ubuntu/.kube
-}
-
 
 
 main() {
@@ -1097,7 +1085,6 @@ TERRAPILOT_COMMANDS
   run_as_ubuntu kubectl get nodes -o wide || true
   run_as_ubuntu kubectl get pods -A -o wide || true
   /opt/terrapilot/bin/verify-kubernetes-infra.sh || log "WARNING: final Kubernetes verification reported issues. Run kubernetes-check after bootstrap for details."
-  switch_default_kubeconfig_to_public
 
   echo "========================================"
   echo "TerraPilot user data completed: $(date)"
