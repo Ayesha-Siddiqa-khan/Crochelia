@@ -145,6 +145,9 @@ jobs:
             --from-literal=DATABASE_URL="${{ secrets.DATABASE_URL }}" \
             --from-literal=SUPABASE_URL="$SB_URL" \
             --from-literal=SUPABASE_ANON_KEY="$SB_KEY" \
+            --from-literal=DEMO_LOGIN_ENABLED="${{ secrets.DEMO_LOGIN_ENABLED }}" \
+            --from-literal=DEMO_LOGIN_EMAIL="${{ secrets.DEMO_LOGIN_EMAIL }}" \
+            --from-literal=DEMO_LOGIN_PASSWORD="${{ secrets.DEMO_LOGIN_PASSWORD }}" \
             -n crochelia --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Create configmap
