@@ -67,7 +67,11 @@ jobs:
           KUBECONFIG_CONTENT: ${{ secrets.KUBE_CONFIG }}
         run: |
           mkdir -p "$HOME/.kube"
-          printf '%s\n' "$KUBECONFIG_CONTENT" > "$HOME/.kube/config"
+          [ -n "$KUBECONFIG_CONTENT" ] || { echo "ERROR: KUBE_CONFIG secret is empty"; exit 1; }
+          printf '%s' "$KUBECONFIG_CONTENT" | base64 -d > "$HOME/.kube/config" || {
+            echo "ERROR: KUBE_CONFIG is not valid base64. Generate the value with terraform/scripts/generate-kubeconfig-github.sh (the KUBE_CONFIG_DATA base64 blob)."
+            exit 1
+          }
           chmod 600 "$HOME/.kube/config"
 
       - name: Verify kubeconfig
