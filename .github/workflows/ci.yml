@@ -131,20 +131,33 @@ jobs:
             -n crochelia --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Create app secrets
+        env:
+          SB_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SB_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
         run: |
+          if [ -z "$SB_URL" ] || [ -z "$SB_KEY" ]; then
+            echo "Supabase secrets not set in GitHub - keeping existing cluster secret."
+            exit 0
+          fi
           kubectl create secret generic crochelia-secret \
             --from-literal=SUPABASE_SECRET_KEY="${{ secrets.SUPABASE_SECRET_KEY }}" \
             --from-literal=ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}" \
             --from-literal=DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-            --from-literal=SUPABASE_URL="${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" \
-            --from-literal=SUPABASE_ANON_KEY="${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}" \
+            --from-literal=SUPABASE_URL="$SB_URL" \
+            --from-literal=SUPABASE_ANON_KEY="$SB_KEY" \
             -n crochelia --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Create configmap
+        env:
+          SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
         run: |
+          if [ -z "$SITE_URL" ]; then
+            echo "NEXT_PUBLIC_SITE_URL not set in GitHub - keeping existing cluster configmap."
+            exit 0
+          fi
           kubectl create configmap crochelia-config \
             --from-literal=NODE_ENV="production" \
-            --from-literal=NEXT_PUBLIC_SITE_URL="${{ secrets.NEXT_PUBLIC_SITE_URL }}" \
+            --from-literal=NEXT_PUBLIC_SITE_URL="$SITE_URL" \
             -n crochelia --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Clean up stale resources
