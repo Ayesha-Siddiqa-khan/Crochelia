@@ -136,6 +136,8 @@ jobs:
             --from-literal=SUPABASE_SECRET_KEY="${{ secrets.SUPABASE_SECRET_KEY }}" \
             --from-literal=ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}" \
             --from-literal=DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            --from-literal=SUPABASE_URL="${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" \
+            --from-literal=SUPABASE_ANON_KEY="${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}" \
             -n crochelia --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Create configmap
