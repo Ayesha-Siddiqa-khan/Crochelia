@@ -252,3 +252,7 @@ sudo kubeadm token create --print-join-command
 aws ssm delete-parameter --name "/terrapilot/Crochelia/dev/kubernetes/join-command/private" --region "us-east-1"
 ```
 
+## CI/CD
+
+Deploys automatically on push to `main`.
+
