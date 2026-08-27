@@ -103,6 +103,14 @@ resource "aws_security_group" "ec2_consolidated" {
   }
 
   ingress {
+    description = "Kubernetes NodePort (Crochelia)"
+    from_port   = 30691
+    to_port     = 30691
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     description = "HTTPS"
     from_port   = 443
     to_port     = 443
@@ -139,7 +147,7 @@ locals {
     try(aws_security_group.ec2_consolidated[0].id, null),
   ])
 
-  generated_ec2_security_group_rule_count = 12
+  generated_ec2_security_group_rule_count = 13
 
   ec2_security_group_ids = (
     var.ec2_security_group_attachment_mode == "generated" ? local.generated_ec2_security_group_ids :
