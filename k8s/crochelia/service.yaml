@@ -5,6 +5,9 @@ metadata:
   namespace: crochelia
 spec:
   type: NodePort
+  # Each node's NodePort serves only its local pod — avoids cross-node pod
+  # traffic (Calico VXLAN between the two nodes is currently unreliable).
+  externalTrafficPolicy: Local
   selector:
     app: crochelia
   ports:
